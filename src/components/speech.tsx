@@ -10,6 +10,7 @@ export default function Speech() {
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition,
+    finalTranscript,
   } = useSpeechRecognition();
 
   //   if (!browserSupportsSpeechRecognition) {
@@ -17,7 +18,11 @@ export default function Speech() {
   //         <span>{`Browser doesn't support speech recognition.`}</span>
   //     );
   //   }
-  console.log('transcript', transcript);
+  console.log('finalTranscript', finalTranscript);
+
+  if (!listening && finalTranscript) {
+    console.log('Fianl Transcript');
+  }
 
   const startListening = () =>
     SpeechRecognition.startListening({
