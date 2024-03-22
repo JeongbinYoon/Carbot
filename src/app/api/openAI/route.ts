@@ -28,8 +28,7 @@ export async function POST(req: Request) {
     messages: [
       {
         role: 'system',
-        content:
-          'You will be provided with a block of text, and your task is to extract a list of keywords from it.',
+        content: `Please provide movement instructions in the format ['forward', 3000]`,
       },
       {
         role: 'user',
@@ -40,7 +39,7 @@ export async function POST(req: Request) {
     max_tokens: 64,
     top_p: 1,
   });
-  console.log(response);
+
   return NextResponse.json(response.choices[0].message);
 }
 
