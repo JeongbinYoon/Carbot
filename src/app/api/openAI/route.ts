@@ -1,5 +1,3 @@
-import * as dotenv from 'dotenv';
-import Configuration from 'openai';
 import { OpenAI } from 'openai';
 import { NextResponse } from 'next/server';
 
@@ -21,18 +19,18 @@ export async function POST(req: Request) {
     return;
   }
   const data = await req.json();
-  const question = data.question || '';
+  const command = data.command || '';
 
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [
       {
         role: 'system',
-        content: `Please provide movement instructions in the format ['forward', 3000]`,
+        content: `Please provide movement instructions in the format like ['forward', 3000]`,
       },
       {
         role: 'user',
-        content: question,
+        content: command,
       },
     ],
     temperature: 0.5,

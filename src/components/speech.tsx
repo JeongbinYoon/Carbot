@@ -3,7 +3,7 @@ import 'regenerator-runtime/runtime';
 import SpeechRecognition, {
   useSpeechRecognition,
 } from 'react-speech-recognition';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Speech() {
   const {
@@ -19,11 +19,6 @@ export default function Speech() {
   //         <span>{`Browser doesn't support speech recognition.`}</span>
   //     );
   //   }
-  console.log('finalTranscript', finalTranscript);
-
-  if (!listening && finalTranscript) {
-    console.log('Fianl Transcript');
-  }
 
   const startListening = () =>
     SpeechRecognition.startListening({
@@ -37,13 +32,11 @@ export default function Speech() {
 
   // openAI 연동
   const [answer, setAnswer] = useState('');
-  const handleSubmit = async () => {
-    const question = 'Move left 1 meter.';
-
+  const sendCommandToOpenAI = async (command: string) => {
     try {
       const res = await fetch('http://localhost:3000/api/openAI', {
         method: 'POST',
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({ command }),
         headers: {
           'content-type': 'application/json',
         },
@@ -57,6 +50,13 @@ export default function Speech() {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (!listening && finalTranscript) {
+      console.log('Fianl Transcript', finalTranscript);
+      sendCommandToOpenAI(finalTranscript);
+    }
+  }, [listening, finalTranscript]);
   return (
     <div>
       <p>Microphone: {listening ? 'on' : 'off'}</p>
@@ -65,7 +65,6 @@ export default function Speech() {
       <button onClick={resetTranscript}>Reset</button>
       <p>{transcript}</p>
 
-      <button onClick={handleSubmit}>TEST</button>
       <pre>{JSON.stringify(answer)}</pre>
     </div>
   );
