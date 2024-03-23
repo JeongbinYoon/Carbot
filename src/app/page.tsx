@@ -1,5 +1,7 @@
 import Speech from '@/components/speech';
+import ThreeWorld from '@/components/threeWorld';
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 export default function Home() {
   return (
@@ -110,6 +112,11 @@ export default function Home() {
     //     </a>
     //   </div>
     // </main>
-    <Speech />
+    <div>
+      <Speech />
+      <Suspense fallback={'wating...'}>
+        <ThreeWorld />
+      </Suspense>
+    </div>
   );
 }
