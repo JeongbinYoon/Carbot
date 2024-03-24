@@ -6,7 +6,17 @@ import { useGLTF } from '@react-three/drei';
 const Scene = () => {
   const gltf = useGLTF('assets/models/dunehunter/dunehunter.gltf');
 
-  return <primitive object={gltf.scene} scale={0.5} />;
+  return (
+    <>
+      <ambientLight intensity={0.2} />
+      <directionalLight />
+      {/* <mesh> */}
+      {/* Width and height segments for displacementMap */}
+      {/* <sphereBufferGeometry args={[1, 100, 100]} /> */}
+      {/* </mesh> */}
+      <primitive object={gltf.scene} scale={0.5} />
+    </>
+  );
 };
 
 export default function App() {
@@ -15,7 +25,7 @@ export default function App() {
       <Canvas>
         <Scene />
         <OrbitControls />
-        <Environment preset='sunset' background />
+        {/* <Environment preset='sunset' background /> */}
       </Canvas>
     </div>
   );
