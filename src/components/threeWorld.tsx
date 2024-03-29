@@ -1,9 +1,16 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
-import { Environment, OrbitControls, Html } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import {
+  Environment,
+  OrbitControls,
+  Html,
+  PerspectiveCamera,
+} from '@react-three/drei';
 import { useGLTF } from '@react-three/drei';
 import { DoubleSide } from 'three';
+import gsap from 'gsap';
+import { useEffect, useRef } from 'react';
 
 export default function App() {
   return (
@@ -23,20 +30,18 @@ export default function App() {
 }
 
 const Scene = () => {
-  const gltf = useGLTF('assets/models/dunehunter/dunehunter.gltf');
-
   return (
     <>
       {/* 라이트 */}
       <ambientLight intensity={0.2} />
-      <directionalLight />
-
+      <directionalLight position={[0, 0, 1]} />
       {/* 자동차 모델 */}
-      <primitive object={gltf.scene} scale={0.5} />
+      <Car />
 
       {/* 오브젝트 */}
       <GreenSquare />
       <BlueSphere />
+      <RedBox />
 
       {/* 툴팁 */}
       <group>
@@ -44,17 +49,64 @@ const Scene = () => {
         <ToolTip2 />
         <ToolTip3 />
       </group>
+
+      {/* <PerspectiveCamera position={[2, 2, 2]} makeDefault /> */}
     </>
   );
 };
 
+const Car = () => {
+  const gltf = useGLTF('assets/models/dunehunter/dunehunter.gltf');
+  const car = useRef();
+  const sphere = useRef();
+  useFrame((state, delta) => {
+    gsap.to(car.current.position, {
+      duration: 5,
+      z: state.clock.elapsedTime,
+    });
+  });
+  return <primitive ref={car} object={gltf.scene} scale={0.5} />;
+};
+
 const BlueSphere = () => {
+  const sphere = useRef();
+  useEffect(() => {
+    gsap.to(sphere.current.position, {
+      duration: 1,
+      y: 2,
+    });
+  }, [sphere]);
+  useFrame((state, delta) => {
+    gsap.to(sphere.current.position, {
+      duration: 5,
+      z: state.clock.elapsedTime,
+    });
+  });
+
   return (
-    <mesh position={[1.5, 0.5, 4]} scale={[0.5, 0.5, 0.5]}>
+    <mesh ref={sphere} position={[1.5, 0.5, 4]} scale={[0.5, 0.5, 0.5]}>
       <mesh>
         <sphereGeometry args={[1, 100, 100]} />
         <meshBasicMaterial color='blue' />
       </mesh>
+    </mesh>
+  );
+};
+
+const RedBox = () => {
+  const box = useRef();
+  useFrame((state, delta) => {
+    gsap.to(box.current.rotation, {
+      duration: 5,
+      z: state.clock.elapsedTime,
+      y: state.clock.elapsedTime,
+    });
+  });
+
+  return (
+    <mesh ref={box} position={[1.5, 0.5, 4]} scale={[0.5, 0.5, 0.5]}>
+      <boxGeometry args={[4, 4, 4]} />
+      <meshBasicMaterial color='red' />
     </mesh>
   );
 };
