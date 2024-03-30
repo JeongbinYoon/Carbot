@@ -12,12 +12,12 @@ import { DoubleSide } from 'three';
 import gsap from 'gsap';
 import { useEffect, useRef } from 'react';
 
-export default function App() {
+export default function App({ command }) {
   return (
     <div className='flex justify-center items-center h-screen'>
       <Canvas>
         {/* 장면 */}
-        <Scene />
+        <Scene command={command} />
 
         {/* 카메라 컨트롤 */}
         <OrbitControls />
@@ -29,14 +29,14 @@ export default function App() {
   );
 }
 
-const Scene = () => {
+const Scene = ({ command }) => {
   return (
     <>
       {/* 라이트 */}
       <ambientLight intensity={0.2} />
       <directionalLight position={[0, 0, 1]} />
       {/* 자동차 모델 */}
-      <Car />
+      <Car command={command} />
 
       {/* 오브젝트 */}
       <GreenSquare />
@@ -55,15 +55,22 @@ const Scene = () => {
   );
 };
 
-const Car = () => {
+const Car = ({ command }) => {
+  console.log('command>>>', command);
+  const direction = {
+    forward: 'z',
+    left: 'x',
+  };
   const gltf = useGLTF('assets/models/dunehunter/dunehunter.gltf');
   const car = useRef();
   const sphere = useRef();
   useFrame((state, delta) => {
-    gsap.to(car.current.position, {
-      duration: 5,
-      z: state.clock.elapsedTime,
-    });
+    console.log('>>>>>>>>>>>>!', command);
+    if (command) {
+      const options = { duration: command[1] };
+      options[direction[command[0]]] = state.clock.elapsedTime;
+      gsap.to(car.current.position, options);
+    }
   });
   return <primitive ref={car} object={gltf.scene} scale={0.5} />;
 };

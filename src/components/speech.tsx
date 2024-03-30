@@ -5,7 +5,7 @@ import SpeechRecognition, {
 } from 'react-speech-recognition';
 import { useEffect, useState } from 'react';
 
-export default function Speech() {
+export default function Speech({ onCommandChange }) {
   const {
     transcript,
     listening,
@@ -46,6 +46,7 @@ export default function Speech() {
 
       setAnswer(message);
       console.log('message', message);
+      onCommandChange(message);
     } catch (error) {
       console.error(error);
     }
